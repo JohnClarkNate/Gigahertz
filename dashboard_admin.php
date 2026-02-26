@@ -1141,7 +1141,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : '';
 <div class="sidebar">
     <div class="sidebar-header">
         <div class="sidebar-logo" style="display: flex; justify-content: center; align-items: center;">
-            <span><img src="/ruru/white.png" alt="Logo" style="max-width: 180px; height: auto;"></span>
+            <span><img src="/giga/white.png" alt="Logo" style="max-width: 180px; height: auto;"></span>
         </div>
     </div>
     <nav class="sidebar-nav">
