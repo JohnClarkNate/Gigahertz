@@ -108,8 +108,8 @@ if (!function_exists('posEnsureHiddenItemsTable')) {
     }
 }
 
-// Check authorization - only POS Head, Sales Head, or Admin can access POS
-if (!isset($_SESSION['user']) || !in_array($_SESSION['role'], ['head_pos', 'head_sales', 'admin'])) {
+// Check authorization - allow Admin and Staff (plus legacy POS/Sales head roles for compatibility)
+if (!isset($_SESSION['user']) || !in_array($_SESSION['role'], ['admin', 'staff', 'head_pos', 'head_sales'])) {
     header("Location: login.php");
     exit();
 }
@@ -276,6 +276,102 @@ logActivity(
             display: flex;
             gap: 15px;
             align-items: center;
+        }
+
+        .datetime-chip {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            min-width: 230px;
+            line-height: 1.2;
+        }
+
+        .datetime-daydate {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .datetime-time {
+            font-size: 16px;
+            color: var(--primary);
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        .menu-container {
+            position: relative;
+        }
+
+        .menu-toggle {
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .menu-toggle:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .menu-toggle-line {
+            width: 18px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 999px;
+        }
+
+        .menu-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 190px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            padding: 8px;
+            display: none;
+            z-index: 20;
+        }
+
+        .menu-dropdown.show {
+            display: block;
+        }
+
+        .menu-item {
+            width: 100%;
+            border: none;
+            background: transparent;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .menu-item:hover {
+            background: var(--light);
+        }
+
+        .menu-item-danger {
+            color: var(--danger);
         }
 
         .btn {
@@ -758,6 +854,130 @@ logActivity(
             margin-top: 10px;
         }
 
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .payment-option-btn {
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text-primary);
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .payment-option-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .payment-option-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        .payment-fields {
+            margin-bottom: 16px;
+        }
+
+        .payment-fields label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-align: left;
+        }
+
+        .payment-fields input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .cash-change-display {
+            margin-top: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .cash-change-display.insufficient {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .payment-proceed-wrap {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .payment-proceed-wrap .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .payment-preview {
+            text-align: left;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            background: var(--light);
+            margin-bottom: 14px;
+        }
+
+        .payment-preview-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .payment-preview-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .payment-preview-item:last-child {
+            border-bottom: none;
+        }
+
+        .payment-preview-summary {
+            margin-top: 10px;
+            border-top: 1px solid var(--border);
+            padding-top: 8px;
+        }
+
+        .payment-preview-summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .payment-preview-summary-row.total {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
         .action-buttons .btn {
             flex: 1;
         }
@@ -927,12 +1147,27 @@ logActivity(
         <div class="header">
             <img src="blue.png" alt="POS Logo" style="height: 40px; object-fit: contain;">
             <div class="header-actions">
-                <span id="time"></span>
-                <form method="POST" style="margin: 0;">
-                    <button type="submit" name="logout" class="btn btn-secondary">
-                        <i class="fas fa-sign-out-alt"></i> Logout
+                <div class="datetime-chip" aria-live="polite">
+                    <div class="datetime-daydate" id="currentDayDate">--</div>
+                    <div class="datetime-time" id="time">--:--:--</div>
+                </div>
+                <div class="menu-container" id="navMenuContainer">
+                    <button type="button" class="menu-toggle" id="navMenuToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="navMenuDropdown">
+                        <span class="menu-toggle-line"></span>
+                        <span class="menu-toggle-line"></span>
+                        <span class="menu-toggle-line"></span>
                     </button>
-                </form>
+                    <div class="menu-dropdown" id="navMenuDropdown">
+                        <a href="pos/sales_history.php" class="menu-item">
+                            <i class="fas fa-receipt"></i> Sales History
+                        </a>
+                        <form method="POST" style="margin: 0;">
+                            <button type="submit" name="logout" class="menu-item menu-item-danger" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1002,6 +1237,10 @@ logActivity(
 
             <div class="cart-summary">
                 <div class="summary-row">
+                    <span class="summary-label">Enter Promo Code:</span>
+                    <input type="text" id="promoCodeInput" class="payment-input" placeholder="Enter promo code" maxlength="20" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="summary-row">
                     <span class="summary-label">Subtotal:</span>
                     <span class="summary-value" id="subtotal">₱0.00</span>
                 </div>
@@ -1009,38 +1248,12 @@ logActivity(
                     <span class="summary-label">Tax (12%):</span>
                     <span class="summary-value" id="tax">₱0.00</span>
                 </div>
-                <div class="summary-row discount-row">
-                    <div class="discount-input-group">
-                        <div class="discount-field">
-                            <label for="discountType">Discount Type</label>
-                            <select id="discountType">
-                                <option value="none">No Discount</option>
-                                <option value="coupon">Coupon</option>
-                                <option value="pwd">PWD (20%)</option>
-                                <option value="senior">Senior Citizen (20%)</option>
-                                <option value="employee">Employee Perk (15%)</option>
-                            </select>
-                        </div>
-                        <div class="discount-field">
-                            <label for="discountInput">Discount Amount (₱)</label>
-                            <input type="number" id="discountInput" placeholder="0.00" step="0.01" min="0" readonly>
-                        </div>
-                    </div>
-                </div>
-                <div class="summary-row" id="discountTypeNote" style="display:none;">
-                    <span class="summary-label">Applied Discount:</span>
-                    <span class="summary-value" id="discountTypeSummary"></span>
-                </div>
                 <div class="total-row">
                     <span>TOTAL:</span>
                     <span id="total">₱0.00</span>
                 </div>
 
                 <div class="checkout-section">
-                    <input type="number" id="paymentAmount" class="payment-input" placeholder="Enter payment amount" step="0.01" onchange="calculateChange()">
-                    <div class="change-display" id="changeDisplay">
-                        Change: <strong id="changeAmount">₱0.00</strong>
-                    </div>
                     <div class="action-buttons">
                         <button class="btn btn-primary" id="checkoutBtn" onclick="checkout()">
                             <i class="fas fa-credit-card"></i> Checkout
@@ -1050,6 +1263,63 @@ logActivity(
                         </button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal: appears before checkout to collect mode of payment details -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="payment-preview" id="paymentPreviewBox">
+                <div class="payment-preview-title">Receipt Preview</div>
+                <div id="paymentPreviewItems"></div>
+                <div class="payment-preview-summary">
+                    <div class="payment-preview-summary-row">
+                        <span>Subtotal</span>
+                        <span id="paymentPreviewSubtotal">₱0.00</span>
+                    </div>
+                    <div class="payment-preview-summary-row">
+                        <span>Promo Code</span>
+                        <span id="paymentPreviewPromoCode">N/A</span>
+                    </div>
+                    <div class="payment-preview-summary-row">
+                        <span>Tax</span>
+                        <span id="paymentPreviewTax">₱0.00</span>
+                    </div>
+                    <div class="payment-preview-summary-row total">
+                        <span>Total</span>
+                        <span id="paymentPreviewTotal">₱0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal header required by UX: prompts user to pick payment mode first -->
+            <div class="modal-title">Mode of Payment</div>
+
+            <!-- 3 selectable payment modes -->
+            <div class="payment-options">
+                <button type="button" class="payment-option-btn" data-mode="cash">Cash</button>
+                <button type="button" class="payment-option-btn" data-mode="card">Card</button>
+                <button type="button" class="payment-option-btn" data-mode="ewallet">E-wallet</button>
+            </div>
+
+            <!-- Cash-only fields: user enters amount tendered and sees computed change -->
+            <div class="payment-fields" id="cashFields" style="display:none;">
+                <label for="cashPaymentAmount">Enter payment amount:</label>
+                <input type="number" id="cashPaymentAmount" min="0" step="0.01" placeholder="0.00">
+                <div id="cashChangeDisplay" class="cash-change-display">Change: ₱0.00</div>
+            </div>
+
+            <!-- Card/E-wallet fields: user must provide external reference number -->
+            <div class="payment-fields" id="digitalFields" style="display:none;">
+                <label for="digitalReferenceNo">Reference No.</label>
+                <input type="text" id="digitalReferenceNo" placeholder="Enter reference number">
+            </div>
+
+            <!-- Final action button: validates mode-specific fields then processes checkout -->
+            <div class="payment-proceed-wrap">
+                <button type="button" class="btn btn-primary" id="proceedCheckoutBtn">Proceed to Checkout</button>
+                <button type="button" class="btn btn-danger" id="cancelPaymentBtn">Cancel</button>
             </div>
         </div>
     </div>
@@ -1068,8 +1338,8 @@ logActivity(
                         <span id="receiptRunningTotal">₱0.00</span>
                     </div>
                     <div class="receipt-summary-row">
-                        <span>Discount</span>
-                        <span id="receiptDiscount">₱0.00</span>
+                        <span>Promo Code</span>
+                        <span id="receiptPromoCode">N/A</span>
                     </div>
                     <div class="receipt-summary-row">
                         <span>Tax</span>
@@ -1104,16 +1374,37 @@ logActivity(
         let cart = JSON.parse(localStorage.getItem('pos_cart')) || [];
         let isProcessingCheckout = false;
         let activeCategoryFilter = 'all';
-        let manualDiscountOverride = false;
+        // Tracks currently selected payment mode in payment modal.
+        let selectedPaymentMode = '';
 
         const checkoutButton = document.getElementById('checkoutBtn');
         const checkoutButtonDefaultLabel = checkoutButton ? checkoutButton.innerHTML : '';
-        const discountInput = document.getElementById('discountInput');
-        const discountTypeSelect = document.getElementById('discountType');
-        const discountTypeSummary = document.getElementById('discountTypeSummary');
-        const discountTypeNote = document.getElementById('discountTypeNote');
+        const promoCodeInput = document.getElementById('promoCodeInput');
         const emptyProductsState = document.getElementById('emptyProductsState');
+        const paymentModal = document.getElementById('paymentModal');
+        const cashFields = document.getElementById('cashFields');
+        const digitalFields = document.getElementById('digitalFields');
+        const cashPaymentAmountInput = document.getElementById('cashPaymentAmount');
+        const digitalReferenceNoInput = document.getElementById('digitalReferenceNo');
+        const cashChangeDisplay = document.getElementById('cashChangeDisplay');
+        const cancelPaymentBtn = document.getElementById('cancelPaymentBtn');
+        const proceedCheckoutBtn = document.getElementById('proceedCheckoutBtn');
+        const proceedCheckoutBtnDefaultLabel = proceedCheckoutBtn ? proceedCheckoutBtn.innerHTML : '';
+        const paymentPreviewItems = document.getElementById('paymentPreviewItems');
+        const paymentPreviewSubtotal = document.getElementById('paymentPreviewSubtotal');
+        const paymentPreviewPromoCode = document.getElementById('paymentPreviewPromoCode');
+        const paymentPreviewTax = document.getElementById('paymentPreviewTax');
+        const paymentPreviewTotal = document.getElementById('paymentPreviewTotal');
         const TAX_RATE = 0.12;
+
+        // Promo rules that are allowed by the POS.
+        // Each code has either a percent discount or a fixed amount discount.
+        // minSubtotal prevents using a promo for very small purchases.
+        const PROMO_RULES = {
+            WELCOME10: { label: 'Welcome 10%', percent: 0.10, minSubtotal: 0 },
+            SAVE50: { label: 'Save ₱50', fixed: 50, minSubtotal: 500 },
+            VIP20: { label: 'VIP 20%', percent: 0.20, minSubtotal: 1000 }
+        };
 
         <?php
             $sku_index = [];
@@ -1187,25 +1478,29 @@ logActivity(
             skuInput.focus();
         }
 
-        const discountTypeConfig = {
-            none: { label: 'No Discount' },
-            coupon: { label: 'Coupon', percent: 0.10 },
-            pwd: { label: 'PWD Discount', percent: 0.20 },
-            senior: { label: 'Senior Citizen Discount', percent: 0.20 },
-            employee: { label: 'Employee Perk', percent: 0.15 }
-        };
-
-        // Update time
-        setInterval(function() {
+        // Updates header with current day/date and real-time clock.
+        function updateHeaderDateTime() {
             const now = new Date();
-            document.getElementById('time').textContent = now.toLocaleTimeString();
-        }, 1000);
+            const dayDateEl = document.getElementById('currentDayDate');
+            const timeEl = document.getElementById('time');
+            if (!dayDateEl || !timeEl) {
+                return;
+            }
 
-        discountTypeSelect?.addEventListener('change', () => {
-            manualDiscountOverride = false;
-            applyDiscountPreset(true);
-            updateTotals();
-        });
+            dayDateEl.textContent = now.toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+
+            timeEl.textContent = now.toLocaleTimeString('en-US', {
+                hour12: true,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
 
         function formatCurrency(value) {
             return '₱' + (value || 0).toFixed(2);
@@ -1215,53 +1510,89 @@ logActivity(
             return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         }
 
-        function applyDiscountPreset(force = false) {
-            if (!discountTypeSelect || !discountInput) {
-                return;
-            }
-            const selected = discountTypeSelect.value;
-            const config = discountTypeConfig[selected] || null;
-            const subtotal = getCartSubtotal();
-
-            if (!config || typeof config.percent === 'undefined') {
-                if (force) {
-                    discountInput.value = '';
-                }
-                return;
-            }
-
-            discountInput.value = subtotal > 0 ? (subtotal * config.percent).toFixed(2) : '';
+        // Converts any promo input to a safe standardized format.
+        // 1) Uppercase so users can type in any letter case.
+        // 2) Remove characters outside A-Z, 0-9, and dash.
+        function normalizePromoCode(raw) {
+            const text = String(raw || '').toUpperCase();
+            return text.replace(/[^A-Z0-9-]/g, '').trim();
         }
 
-        function updateDiscountSummary(subtotal, discountAmount) {
-            if (!discountTypeSelect || !discountTypeNote || !discountTypeSummary) {
-                return;
-            }
-            const selected = discountTypeSelect.value;
-            const config = discountTypeConfig[selected] || null;
+        // Calculates promo discount based on subtotal and promo code.
+        // Returns metadata used by totals, checkout payload, and receipt.
+        function getPromoResult(subtotal) {
+            // Read and normalize current promo text input.
+            const rawCode = promoCodeInput ? promoCodeInput.value : '';
+            const code = normalizePromoCode(rawCode);
 
-            if (!config || discountAmount <= 0) {
-                discountTypeNote.style.display = 'none';
-                discountTypeSummary.textContent = '';
-                return;
+            // Default result means no valid promo applied.
+            const result = {
+                code,
+                valid: false,
+                discount: 0,
+                discountType: 'none',
+                label: 'No Promo Applied'
+            };
+
+            // No code entered means keep default no-discount result.
+            if (!code) {
+                return result;
             }
 
-            discountTypeNote.style.display = 'flex';
-            const percentText = typeof config.percent !== 'undefined'
-                ? ` (${(config.percent * 100).toFixed(0)}%)`
-                : '';
-            discountTypeSummary.textContent = `${config.label}${percentText} — ${formatCurrency(discountAmount)}`;
+            // Find promo rule by normalized code.
+            const rule = PROMO_RULES[code];
+            if (!rule) {
+                return result;
+            }
+
+            // Check minimum subtotal requirement before applying promo.
+            if ((Number(subtotal) || 0) < (Number(rule.minSubtotal) || 0)) {
+                return result;
+            }
+
+            // Compute raw discount amount from percent or fixed value.
+            let discountValue = 0;
+            if (typeof rule.percent === 'number') {
+                discountValue = subtotal * rule.percent;
+            } else if (typeof rule.fixed === 'number') {
+                discountValue = rule.fixed;
+            }
+
+            // Never allow discount to exceed subtotal.
+            discountValue = Math.min(subtotal, Math.max(0, discountValue));
+
+            // Mark result as valid and fill computed fields.
+            result.valid = true;
+            result.discount = Number(discountValue.toFixed(2));
+            result.discountType = typeof rule.percent === 'number' ? 'promo_percent' : 'promo_fixed';
+            result.label = rule.label;
+            return result;
+        }
+
+        // Computes full totals in one place to avoid mismatched math in UI and checkout.
+        function computeTotals() {
+            const subtotal = getCartSubtotal();
+            const promo = getPromoResult(subtotal);
+            const discount = promo.discount;
+            const tax = subtotal * TAX_RATE;
+            const total = subtotal - discount + tax;
+
+            return {
+                subtotal,
+                discount,
+                tax,
+                total,
+                promoCode: promo.valid ? promo.code : '',
+                discountType: promo.valid ? promo.discountType : 'none',
+                promoLabel: promo.label,
+                promoValid: promo.valid
+            };
         }
 
         function resetDiscountFields() {
-            if (discountTypeSelect) {
-                discountTypeSelect.value = 'none';
+            if (promoCodeInput) {
+                promoCodeInput.value = '';
             }
-            if (discountInput) {
-                discountInput.value = '';
-            }
-            manualDiscountOverride = false;
-            updateDiscountSummary(0, 0);
         }
 
         function initCategoryFilters() {
@@ -1322,7 +1653,7 @@ logActivity(
                 return;
             }
 
-            fetch('pos_system.php', {
+            fetch('pos.php?route=system', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1502,23 +1833,13 @@ logActivity(
         }
 
         function updateTotals() {
-            const subtotal = getCartSubtotal();
-            const selectedType = discountTypeSelect ? discountTypeSelect.value : 'none';
-            const config = discountTypeConfig[selectedType] || null;
+            // Compute subtotal, promo discount, tax, and total in one consistent flow.
+            const totals = computeTotals();
 
-            if (!manualDiscountOverride && config && typeof config.percent !== 'undefined') {
-                applyDiscountPreset();
-            }
-
-            const discountValue = discountInput ? Math.max(0, parseFloat(discountInput.value) || 0) : 0;
-            const discount = Math.min(subtotal, discountValue);
-            const tax = subtotal * TAX_RATE;
-            const total = subtotal - discount + tax;
-
-            document.getElementById('subtotal').textContent = formatCurrency(subtotal);
-            document.getElementById('tax').textContent = formatCurrency(tax);
-            document.getElementById('total').textContent = formatCurrency(total);
-            updateDiscountSummary(subtotal, discount);
+            // Update visible summary values.
+            document.getElementById('subtotal').textContent = formatCurrency(totals.subtotal);
+            document.getElementById('tax').textContent = formatCurrency(totals.tax);
+            document.getElementById('total').textContent = formatCurrency(totals.total);
 
             calculateChange();
         }
@@ -1526,24 +1847,24 @@ logActivity(
         function renderReceiptPreview(details) {
             const receiptList = document.getElementById('receiptItemsList');
             const runningTotalEl = document.getElementById('receiptRunningTotal');
-            const receiptDiscountEl = document.getElementById('receiptDiscount');
+            const receiptPromoCodeEl = document.getElementById('receiptPromoCode');
             const receiptTaxEl = document.getElementById('receiptTax');
             const receiptGrandTotalEl = document.getElementById('receiptGrandTotal');
 
-            if (!receiptList || !runningTotalEl || !receiptDiscountEl || !receiptTaxEl || !receiptGrandTotalEl) {
+            if (!receiptList || !runningTotalEl || !receiptPromoCodeEl || !receiptTaxEl || !receiptGrandTotalEl) {
                 return;
             }
 
             const items = details?.items || [];
             const subtotal = Number(details?.subtotal) || 0;
-            const discount = Number(details?.discount) || 0;
+            const promoCode = String(details?.promoCode || '').trim();
             const tax = Number(details?.tax) || 0;
             const total = Number(details?.total) || 0;
 
             if (!items.length) {
                 receiptList.innerHTML = '<div class="receipt-item"><div>No items in this transaction.</div></div>';
                 runningTotalEl.textContent = formatCurrency(0);
-                receiptDiscountEl.textContent = formatCurrency(0);
+                receiptPromoCodeEl.textContent = 'N/A';
                 receiptTaxEl.textContent = formatCurrency(0);
                 receiptGrandTotalEl.textContent = formatCurrency(0);
                 return;
@@ -1567,23 +1888,13 @@ logActivity(
                 `;
             }).join('');
             runningTotalEl.textContent = formatCurrency(runningTotal);
-            receiptDiscountEl.textContent = formatCurrency(discount);
+            receiptPromoCodeEl.textContent = promoCode || 'N/A';
             receiptTaxEl.textContent = formatCurrency(tax);
             receiptGrandTotalEl.textContent = formatCurrency(total);
         }
 
         function calculateChange() {
-            const total = parseFloat(document.getElementById('total').textContent.replace('₱', '')) || 0;
-            const payment = parseFloat(document.getElementById('paymentAmount').value) || 0;
-            const changeDisplay = document.getElementById('changeDisplay');
-            
-            if (payment >= total && payment > 0) {
-                const change = payment - total;
-                document.getElementById('changeAmount').textContent = formatCurrency(change);
-                changeDisplay.classList.add('show');
-            } else {
-                changeDisplay.classList.remove('show');
-            }
+            return;
         }
 
         function clearCart() {
@@ -1591,7 +1902,6 @@ logActivity(
                 cart = [];
                 saveCart();
                 updateCartDisplay();
-                document.getElementById('paymentAmount').value = '';
                 resetDiscountFields();
             }
         }
@@ -1600,65 +1910,229 @@ logActivity(
             localStorage.setItem('pos_cart', JSON.stringify(cart));
         }
 
-        function setCheckoutProcessing(state) {
-            isProcessingCheckout = state;
-            if (!checkoutButton) {
-                return;
-            }
-            checkoutButton.disabled = state;
-            if (state) {
-                checkoutButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            } else {
-                checkoutButton.innerHTML = checkoutButtonDefaultLabel || '<i class="fas fa-credit-card"></i> Checkout';
+        // Clears client-side POS state that should not survive a logout/login cycle.
+        // This keeps the next cashier session clean even when using the same browser.
+        function clearPosStateOnLogout() {
+            // Remove persisted cart so page reload after login starts with an empty cart.
+            localStorage.removeItem('pos_cart');
+
+            // Clear in-memory cart immediately (useful if logout is interrupted/cancelled).
+            cart = [];
+
+            // Reset promo field to avoid carrying over prior transaction discount context.
+            if (promoCodeInput) {
+                promoCodeInput.value = '';
             }
         }
 
-        function checkout() {
+        function setCheckoutProcessing(state) {
+            isProcessingCheckout = state;
+            if (!checkoutButton) {
+                // Continue because payment modal buttons may still need state updates.
+            } else {
+                checkoutButton.disabled = state;
+                if (state) {
+                    checkoutButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                } else {
+                    checkoutButton.innerHTML = checkoutButtonDefaultLabel || '<i class="fas fa-credit-card"></i> Checkout';
+                }
+            }
+
+            if (proceedCheckoutBtn) {
+                proceedCheckoutBtn.disabled = state;
+                if (state) {
+                    proceedCheckoutBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                } else {
+                    proceedCheckoutBtn.innerHTML = proceedCheckoutBtnDefaultLabel || 'Proceed to Checkout';
+                }
+            }
+
+            if (cancelPaymentBtn) {
+                cancelPaymentBtn.disabled = state;
+            }
+
+            if (state) {
+                return;
+            }
+        }
+
+        function openPaymentModal() {
+            // Render latest cart/totals snapshot on top preview before showing modal.
+            renderPaymentModePreview();
+            // Reset payment mode selection whenever modal opens.
+            selectedPaymentMode = '';
+            // Hide both mode-specific sections until user picks an option.
+            if (cashFields) {
+                cashFields.style.display = 'none';
+            }
+            if (digitalFields) {
+                digitalFields.style.display = 'none';
+            }
+            // Clear previous input values from prior checkout attempt.
+            if (cashPaymentAmountInput) {
+                cashPaymentAmountInput.value = '';
+            }
+            if (digitalReferenceNoInput) {
+                digitalReferenceNoInput.value = '';
+            }
+            // Remove visual active state from all payment option buttons.
+            document.querySelectorAll('.payment-option-btn').forEach((btn) => btn.classList.remove('active'));
+            // Initialize default change display content.
+            updateCashChangeDisplay();
+            // Finally show the modal.
+            paymentModal?.classList.add('show');
+        }
+
+        function renderPaymentModePreview() {
+            const totals = computeTotals();
+
+            if (paymentPreviewItems) {
+                if (!cart.length) {
+                    paymentPreviewItems.innerHTML = '<div class="payment-preview-item"><span>No items in cart</span><span>₱0.00</span></div>';
+                } else {
+                    paymentPreviewItems.innerHTML = cart.map((item) => {
+                        const quantity = Number(item.quantity) || 0;
+                        const price = Number(item.price) || 0;
+                        const lineTotal = price * quantity;
+                        return `<div class="payment-preview-item"><span>${item.name} x${quantity}</span><span>${formatCurrency(lineTotal)}</span></div>`;
+                    }).join('');
+                }
+            }
+
+            if (paymentPreviewSubtotal) {
+                paymentPreviewSubtotal.textContent = formatCurrency(totals.subtotal);
+            }
+            if (paymentPreviewPromoCode) {
+                paymentPreviewPromoCode.textContent = totals.promoCode || 'N/A';
+            }
+            if (paymentPreviewTax) {
+                paymentPreviewTax.textContent = formatCurrency(totals.tax);
+            }
+            if (paymentPreviewTotal) {
+                paymentPreviewTotal.textContent = formatCurrency(totals.total);
+            }
+        }
+
+        function closePaymentModal() {
+            // Hide modal after successful checkout or when needed.
+            paymentModal?.classList.remove('show');
+        }
+
+        function selectPaymentMode(mode) {
+            // Persist chosen mode for validation and payload fields.
+            selectedPaymentMode = mode;
+            // Highlight active mode button for better UX feedback.
+            document.querySelectorAll('.payment-option-btn').forEach((btn) => {
+                btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
+            });
+
+            // Show cash fields only for cash mode.
+            if (cashFields) {
+                cashFields.style.display = mode === 'cash' ? 'block' : 'none';
+            }
+            // Show reference field for card/e-wallet modes.
+            if (digitalFields) {
+                digitalFields.style.display = (mode === 'card' || mode === 'ewallet') ? 'block' : 'none';
+            }
+
+            // Move focus into relevant input to speed up cashier workflow.
+            if (mode === 'cash') {
+                cashPaymentAmountInput?.focus();
+                updateCashChangeDisplay();
+            }
+            if (mode === 'card' || mode === 'ewallet') {
+                digitalReferenceNoInput?.focus();
+            }
+        }
+
+        function updateCashChangeDisplay() {
+            if (!cashChangeDisplay) {
+                return;
+            }
+            // Use computed total (includes tax/promo discount) as baseline amount due.
+            const total = computeTotals().total;
+            // Read user-entered cash amount; treat empty as 0.
+            const paymentAmount = Number(cashPaymentAmountInput?.value || 0);
+            // Positive => change to return; negative => insufficient cash.
+            const change = paymentAmount - total;
+
+            if (change >= 0) {
+                // Sufficient payment: display change amount in success style.
+                cashChangeDisplay.classList.remove('insufficient');
+                cashChangeDisplay.textContent = 'Change: ' + formatCurrency(change);
+            } else {
+                // Insufficient payment: display shortfall in warning style.
+                cashChangeDisplay.classList.add('insufficient');
+                cashChangeDisplay.textContent = 'Insufficient: ' + formatCurrency(Math.abs(change));
+            }
+        }
+
+        function proceedCheckoutWithPayment() {
+            // Guard against duplicate submits while request is in progress.
             if (isProcessingCheckout) {
                 return;
             }
 
-            // Validation
-            if (cart.length === 0) {
-                showError('Cart is empty! Please add items.');
+            // Enforce required mode selection.
+            if (!selectedPaymentMode) {
+                showError('Please select a mode of payment.');
                 return;
             }
 
-            const subtotal = parseFloat(document.getElementById('subtotal').textContent.replace('₱', '')) || 0;
-            const tax = parseFloat(document.getElementById('tax').textContent.replace('₱', '')) || 0;
-            const displayedTotal = parseFloat(document.getElementById('total').textContent.replace('₱', '')) || 0;
-            const payment = parseFloat(document.getElementById('paymentAmount').value) || 0;
-            const discountValue = discountInput ? Math.max(0, parseFloat(discountInput.value) || 0) : 0;
-            const discount = Math.min(subtotal, discountValue);
-            const selectedType = discountTypeSelect ? discountTypeSelect.value : 'none';
-            const computedTotal = subtotal - discount + tax;
-            const total = Number.isFinite(computedTotal) ? computedTotal : displayedTotal;
+            // Recompute totals right before submit to avoid stale values.
+            const totals = computeTotals();
+            const tax = totals.tax;
+            const discount = totals.discount;
+            const selectedType = totals.discountType;
+            const total = totals.total;
+            // Default payment/change for non-cash methods.
+            let payment = total;
+            let change = 0;
+            let referenceNo = '';
 
-            if (payment <= 0) {
-                showError('Please enter payment amount.');
-                return;
+            if (selectedPaymentMode === 'cash') {
+                // Cash mode: read tendered amount.
+                payment = Number(cashPaymentAmountInput?.value || 0);
+                if (!Number.isFinite(payment) || payment <= 0) {
+                    showError('Please enter a valid cash payment amount.');
+                    return;
+                }
+                // Cash must cover the total.
+                if (payment < total) {
+                    showError('Cash payment is not enough for the total amount.');
+                    return;
+                }
+                // Compute change for receipt/server payload.
+                change = Number((payment - total).toFixed(2));
+            } else {
+                // Card/E-wallet mode: require a non-empty reference number.
+                referenceNo = (digitalReferenceNoInput?.value || '').trim();
+                if (!referenceNo) {
+                    showError('Please enter a reference number.');
+                    return;
+                }
             }
 
-            if (payment < total) {
-                showError('Insufficient payment amount!');
-                return;
-            }
-
+            // Lock checkout button while request runs.
             setCheckoutProcessing(true);
 
-            // Process checkout via AJAX
+            // Build payload with totals + selected payment details.
             const checkoutData = {
                 items: cart,
-                subtotal: subtotal,
+                subtotal: totals.subtotal,
                 discount: discount,
                 discount_type: selectedType,
                 tax: tax,
                 total: total,
+                promo_code: totals.promoCode,
+                payment_method: selectedPaymentMode,
+                reference_no: referenceNo,
                 payment: payment,
-                change: payment - total
+                change: change
             };
 
-            fetch('pos_checkout.php', {
+            // Submit checkout request to backend endpoint.
+            fetch('pos.php?route=checkout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1667,6 +2141,7 @@ logActivity(
                 body: JSON.stringify(checkoutData)
             })
             .then(async (response) => {
+                // Read text first so we can handle invalid/non-JSON responses safely.
                 const raw = await response.text();
                 const trimmed = raw ? raw.trim() : '';
                 if (!trimmed) {
@@ -1675,11 +2150,13 @@ logActivity(
 
                 let data;
                 try {
+                    // Parse JSON response payload.
                     data = JSON.parse(trimmed);
                 } catch (err) {
                     throw new Error('Invalid server response.');
                 }
 
+                // Handle backend-reported failures.
                 if (!response.ok || !data.success) {
                     throw new Error(data.message || 'Transaction failed. Please try again.');
                 }
@@ -1687,24 +2164,39 @@ logActivity(
                 return data;
             })
             .then(data => {
+                // Close payment modal first, then show success/receipt modal.
+                closePaymentModal();
                 renderReceiptPreview({
                     items: cart,
-                    subtotal: subtotal,
-                    discount: discount,
-                    tax: tax,
-                    total: total
+                    subtotal: Number(data.subtotal) || totals.subtotal,
+                    promoCode: String(data.promo_code || totals.promoCode || '').trim(),
+                    tax: Number(data.tax) || tax,
+                    total: Number(data.total) || total
                 });
                 closeErrorModal();
                 document.getElementById('receiptId').textContent = data.receipt_id;
                 document.getElementById('successModal').classList.add('show');
-                document.getElementById('paymentAmount').value = '';
+                // Re-enable checkout button state after success path.
                 setCheckoutProcessing(false);
             })
             .catch(error => {
+                // Normalize stock-related backend errors and surface to user.
                 const friendlyMessage = handleCheckoutError(error.message);
                 showError('Error processing transaction: ' + friendlyMessage);
+                // Re-enable checkout button state after failure path.
                 setCheckoutProcessing(false);
             });
+        }
+
+        function checkout() {
+            // Validation
+            if (cart.length === 0) {
+                showError('Cart is empty! Please add items.');
+                return;
+            }
+
+            // Instead of direct checkout, open payment mode selection first.
+            openPaymentModal();
         }
 
         function newTransaction() {
@@ -1764,13 +2256,86 @@ logActivity(
         window.onload = function() {
             initCategoryFilters();
             applyProductFilters();
-            applyDiscountPreset(true);
+            updateHeaderDateTime();
+            setInterval(updateHeaderDateTime, 1000);
             updateCartDisplay();
 
             // Wire manual SKU add controls
             const manualBtn = document.getElementById('manualAddBtn');
             const manualSku = document.getElementById('manualSku');
             const manualQty = document.getElementById('manualQty');
+            const navMenuContainer = document.getElementById('navMenuContainer');
+            const navMenuToggle = document.getElementById('navMenuToggle');
+            const navMenuDropdown = document.getElementById('navMenuDropdown');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    // Before submitting logout form, clear all POS client-side session state.
+                    clearPosStateOnLogout();
+                });
+            }
+
+            if (navMenuToggle && navMenuDropdown) {
+                navMenuToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const willOpen = !navMenuDropdown.classList.contains('show');
+                    navMenuDropdown.classList.toggle('show', willOpen);
+                    navMenuToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+                });
+
+                document.addEventListener('click', function(e) {
+                    if (!navMenuContainer || !navMenuContainer.contains(e.target)) {
+                        navMenuDropdown.classList.remove('show');
+                        navMenuToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        navMenuDropdown.classList.remove('show');
+                        navMenuToggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+
+            document.querySelectorAll('.payment-option-btn').forEach((btn) => {
+                btn.addEventListener('click', function() {
+                    // Route clicked option into payment mode selector.
+                    selectPaymentMode(btn.getAttribute('data-mode') || '');
+                });
+            });
+
+            // Keep cash change display synced while cashier types amount.
+            cashPaymentAmountInput?.addEventListener('input', updateCashChangeDisplay);
+            // Cancel button closes payment modal without continuing checkout.
+            cancelPaymentBtn?.addEventListener('click', closePaymentModal);
+            // Proceed button executes full mode-aware checkout flow.
+            proceedCheckoutBtn?.addEventListener('click', proceedCheckoutWithPayment);
+
+            // Promo input guard:
+            // - Forces uppercase
+            // - Removes unsupported characters
+            // - Recalculates totals whenever promo text changes
+            if (promoCodeInput) {
+                promoCodeInput.addEventListener('input', function() {
+                    const normalized = normalizePromoCode(promoCodeInput.value);
+                    if (promoCodeInput.value !== normalized) {
+                        promoCodeInput.value = normalized;
+                    }
+                    updateTotals();
+                });
+
+                promoCodeInput.addEventListener('blur', function() {
+                    promoCodeInput.value = normalizePromoCode(promoCodeInput.value);
+                    // Reject unknown promo codes so users cannot keep arbitrary values.
+                    if (promoCodeInput.value && !PROMO_RULES[promoCodeInput.value]) {
+                        showError('Invalid promo code. Valid codes: WELCOME10, SAVE50, VIP20.');
+                        promoCodeInput.value = '';
+                    }
+                    updateTotals();
+                });
+            }
             if (manualBtn) {
                 manualBtn.addEventListener('click', manualAdd);
             }
@@ -1796,7 +2361,7 @@ logActivity(
             function isExcludedActive(el) {
                 if (!el) return false;
                 const id = (el.id || '').toString();
-                if (['paymentAmount', 'discountInput', 'manualQty', 'searchInput'].includes(id)) return true;
+                if (['promoCodeInput', 'manualQty', 'searchInput', 'cashPaymentAmount', 'digitalReferenceNo'].includes(id)) return true;
                 if (el.classList && el.classList.contains('qty-input')) return true;
                 if (el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') return true;
                 if (el.isContentEditable) return true;
@@ -1807,6 +2372,8 @@ logActivity(
                 try {
                     const active = document.activeElement;
                     if (!document.getElementById('manualSku')) return;
+                    // Do not steal focus while payment modal is open.
+                    if (paymentModal && paymentModal.classList.contains('show')) return;
                     // Don't steal focus if user is actively typing in an excluded field
                     if (isExcludedActive(active)) return;
                     // If manualSku already focused, do nothing

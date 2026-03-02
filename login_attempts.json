@@ -1,30 +1,6 @@
 {
-    "j1": {
-        "attempts": 2,
-        "last_attempt": 1762870944
-    },
-    "finance": {
-        "attempts": 5,
-        "last_attempt": 1764703040,
-        "locked_until": 1764703940,
-        "locked_manually": true
-    },
-    "buko": {
-        "attempts": 5,
-        "last_attempt": 1764703133,
-        "locked_until": 1764704033,
-        "locked_manually": true
-    },
-    "admn": {
-        "attempts": 1,
-        "last_attempt": 1764920277
-    },
-    "ruru": {
-        "attempts": 2,
-        "last_attempt": 1771599511
-    },
     "admin": {
         "attempts": 1,
-        "last_attempt": 1772103649
+        "last_attempt": 1772449596
     }
 }

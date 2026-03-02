@@ -437,14 +437,54 @@
     const D = window.DASHBOARD_DATA || {};
     // finance chart
     try{
-      const financeData = D.finance_monthly || [];
-      const financeLabels = financeData.map(item => {
-        const date = new Date((item.month||'') + '-01'); return isNaN(date) ? (item.month||'') : date.toLocaleDateString('en-US',{month:'short',year:'numeric'});
-      });
-      const incomeData = financeData.map(item => parseFloat(item.income)||0);
-      const expenseData = financeData.map(item => parseFloat(item.expense)||0);
       const ctxF = qs('#financeChart');
-      if(ctxF) mountChart(ctxF, { type:'line', data:{ labels:financeLabels, datasets:[{ label:'Income', data:incomeData, borderColor:getComputedStyle(document.documentElement).getPropertyValue('--success').trim(), backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--success').trim()+'20', tension:0.4, fill:true },{ label:'Expense', data:expenseData, borderColor:getComputedStyle(document.documentElement).getPropertyValue('--danger').trim(), backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--danger').trim()+'20', tension:0.4, fill:true }] }, options:{ responsive:true, maintainAspectRatio:true, plugins:{ legend:{ display:true, position:'top' } }, scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return '₱'+v.toLocaleString(); } } } } } });
+      const filterEl = qs('#financeRangeFilter');
+      const financeSeries = D.finance_series || {};
+      const validRanges = ['daily', 'weekly', 'monthly', 'six_months', 'yearly'];
+      const getSeries = (range) => {
+        if (financeSeries && Array.isArray(financeSeries[range])) {
+          return financeSeries[range];
+        }
+        if (range === 'six_months' && Array.isArray(D.finance_monthly)) {
+          return D.finance_monthly;
+        }
+        return [];
+      };
+      const formatLabel = (range, raw) => {
+        if (!raw && raw !== 0) return '';
+        const value = String(raw);
+        if (range === 'weekly') {
+          return value;
+        }
+        if (range === 'yearly') {
+          return value;
+        }
+        if (range === 'daily') {
+          const d = new Date(value);
+          return isNaN(d) ? value : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        const monthToken = value.includes('-') ? `${value}-01` : value;
+        const date = new Date(monthToken);
+        return isNaN(date) ? value : date.toLocaleDateString('en-US',{month:'short',year:'numeric'});
+      };
+      const renderFinanceChart = (range) => {
+        if(!ctxF) return;
+        const financeData = getSeries(range);
+        const financeLabels = financeData.map(item => formatLabel(range, item.label ?? item.month ?? ''));
+        const incomeData = financeData.map(item => parseFloat(item.income)||0);
+        const expenseData = financeData.map(item => parseFloat(item.expense)||0);
+        mountChart(ctxF, { type:'line', data:{ labels:financeLabels, datasets:[{ label:'Income', data:incomeData, borderColor:getComputedStyle(document.documentElement).getPropertyValue('--success').trim(), backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--success').trim()+'20', tension:0.4, fill:true },{ label:'Expense', data:expenseData, borderColor:getComputedStyle(document.documentElement).getPropertyValue('--danger').trim(), backgroundColor:getComputedStyle(document.documentElement).getPropertyValue('--danger').trim()+'20', tension:0.4, fill:true }] }, options:{ responsive:true, maintainAspectRatio:true, plugins:{ legend:{ display:true, position:'top' } }, scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return '₱'+v.toLocaleString(); } } } } } });
+      };
+
+      let selectedRange = (filterEl && validRanges.includes(filterEl.value)) ? filterEl.value : 'daily';
+      renderFinanceChart(selectedRange);
+      if(filterEl && !filterEl.dataset.bound){
+        filterEl.dataset.bound = '1';
+        filterEl.addEventListener('change', () => {
+          const nextRange = validRanges.includes(filterEl.value) ? filterEl.value : 'daily';
+          renderFinanceChart(nextRange);
+        });
+      }
     }catch(e){ console.error(e); }
     // sales chart
     try{

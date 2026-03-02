@@ -174,6 +174,9 @@ if ($isAdminLoginRequest) {
                             case 'admin':
                                 header("Location: dashboard_admin.php");
                                 break;
+                            case 'staff':
+                                header("Location: pos.php?route=system");
+                                break;
                             case 'head_hr':
                                 header("Location: dashboard_hr.php");
                                 break;
@@ -187,7 +190,7 @@ if ($isAdminLoginRequest) {
                                 header("Location: dashboard_inventory.php");
                                 break;
                             case 'head_pos':
-                                header("Location: pos_system.php");
+                                header("Location: pos.php?route=system");
                                 exit();
                             default:
                                 $login_error = "Unknown role.";
